@@ -1,4 +1,4 @@
-#include <iostream>
+ #include <iostream>
 #include <bitset>
 #include <string>
 #include <vector>
@@ -143,7 +143,7 @@ bitset<28> leftshift(bitset<28> k, int shift) {
 	return k;
 }
 
-bitset<64> char_to_bit(const char s[8]) {
+bitset<64> char_to_bit(string s) {
 	bitset<64> bits;
 	int x = 0;
 	for (int i = 0; i < 8; i++)
@@ -156,11 +156,11 @@ bitset<64> char_to_bit(const char s[8]) {
 		}
 		x += 8;
 	}
-	cout << bits << endl;
+	cout << "init " << bits << endl;
 	return bits;
 }
 
-vector<bitset<48>> generateKeys(const char s[8]) {
+vector<bitset<48>> generateKeys(string s) {
      // Циклический сдвиг влево
     int shiftBits[16] = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
 	bitset<48> subkey[16];
@@ -204,7 +204,6 @@ vector<bitset<48>> generateKeys(const char s[8]) {
 
 	return out;
 }
-
 
 bitset<32> F(bitset<32> R, bitset<48> k) {
 	// Расширение электронного блока
@@ -324,24 +323,40 @@ void show_decrypt(bitset<64> chiper, vector<bitset<48>> subkey) {
 	 // Расшифровываем и записываем в файл b.txt
 	bitset<64> temp_plain = DES_decrypt(chiper, subkey);
 	bitset<64> temp_1 = change(temp_plain);
- 
-	cout << temp_1 << endl;
+	cout << "dep " << temp_plain << endl;
+	cout << "dep " << temp_1 << endl;
 }
 
-void show_encryp(char k[8], char s[8]) {
+bitset<64> show_encryp(string k, string s) {
 	bitset<64> plain = char_to_bit(s);
 	// Создание 16 подключей
 	vector<bitset<48>> subkey;
-	subkey = generateKeys(k);;
+	subkey = generateKeys(k);
 	// Записываем зашифрованный текст в a.txt
 	bitset<64> cipher = DES_encryp(plain, subkey);
-	cout << cipher << endl;
-	show_decrypt(cipher, subkey);
+	cout << "cipher " << cipher << endl;
+	// show_decrypt(cipher, subkey);
+	return cipher;
 }
 
-int main() {
-    char key[8] = {'D', 'E', 'S', 'k', 'e', 'y', '5', '6'};
-	char input[8] = {'z', 'w', 'F', 'e', 'e', 'y', 't', '1'};
+// int main() {
+//     char key[8] = {'D', 'E', 'S', 'k', 'e', 'y', '5', '6'};
+// 	char input[8] = {'z', 'w', 'F', 'e', 'e', 'y', 't', '1'};
 	
-    show_encryp(key, input);
+//     show_encryp(key, input);
+// }
+
+int main() {
+	string s = "computer";
+	string k = "01234567";
+	bitset<64> cipher;
+	cout << s << " " << k << endl;
+	cout << "Start encryo..." << endl;
+	cipher = show_encryp(k, s); // Зашифровать, сгенерировать зашифрованный текст и записать его в a.txt
+	cout << "finish" << endl;
+	cout << "start decrypt..." << endl;
+	vector<bitset<48>> subkey;
+	subkey = generateKeys(k);
+	show_decrypt(cipher, subkey); // Считываем зашифрованный текст в a.txt, расшифровываем, генерируем открытый текст и записываем его в b.txt
+	cout << "finish" << endl;
 }
