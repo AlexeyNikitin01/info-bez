@@ -206,18 +206,18 @@ vector<bitset<48>> generateKeys(string s) {
 }
 
 bitset<32> F(bitset<32> R, bitset<48> k) {
-	// Расширение электронного блока
-	bitset<48> expandR;  
+	bitset<48> expandR;
+	// Расширение до 48
 	for (int i = 0; i < 48; i++)
-		expandR[47 - i] = R[32 - E[i]];  //expandR[i] = R[E[i] - 1];
-	 // XOR
+		expandR[47 - i] = R[32 - E[i]];
+	 // XOR с ключом
 	expandR = expandR ^ k;
-	 // вместо этого S-поле
+	 // На выходе 32 бит
 	bitset<32> output;
 	int x = 0;
 	for (int i = 0; i < 48; i = i + 6)
 	{
-		int row = expandR[i] * 2 + expandR[i + 5];
+		int row = expandR[i] * 2 + expandR[i + 5]; // складываем два крайних бита - это будет
 		int col = expandR[i + 1] * 8 + expandR[i + 2] * 4 + expandR[i + 3] * 2 + expandR[i + 4];
 		int num = S_BOX[i / 6][row][col];
 		bitset<4> temp(num);
@@ -243,13 +243,13 @@ bitset<64> DES_encryp(bitset<64> &plain, vector<bitset<48>> subkey) {
 	bitset<32> newLeft;
 	 // Первоначальная замена IP
 	for (int i = 0; i < 64; i++)
-		currentBits[i] = plain[IP[i] - 1];//
- 
+		currentBits[i] = plain[IP[i] - 1];
+	// Делим на две части
 	for (int i = 0; i < 32; i++)
 		left[i] = currentBits[i];
 	for (int i = 32; i < 64; i++)
 		right[i - 32] = currentBits[i];
-	 // Вводим 16 раундов изменения
+	 // Вводим 16 раундов изменения. Меняем местами левую и правую часть
 	for (int round = 0; round < 16; round++)
 	{
 		newLeft = right;
@@ -338,13 +338,6 @@ bitset<64> show_encryp(string k, string s) {
 	// show_decrypt(cipher, subkey);
 	return cipher;
 }
-
-// int main() {
-//     char key[8] = {'D', 'E', 'S', 'k', 'e', 'y', '5', '6'};
-// 	char input[8] = {'z', 'w', 'F', 'e', 'e', 'y', 't', '1'};
-	
-//     show_encryp(key, input);
-// }
 
 int main() {
 	string s = "computer";
